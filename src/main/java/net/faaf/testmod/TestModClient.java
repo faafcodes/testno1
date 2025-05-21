@@ -1,4 +1,4 @@
-package net.faaf.testno1;
+package net.faaf.testmod;
 
 import net.fabricmc.api.ClientModInitializer;
 

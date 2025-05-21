@@ -1,40 +1,40 @@
 {
-	"schemaVersion": 1,
-	"id": "testno1",
-	"version": "${version}",
-	"name": "TestNo1",
-	"description": "This is my first mod, it's just a test!",
-	"authors": [
-		"faaf"
-	],
-	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/testno1"
-	},
-	"license": "CC0-1.0",
-	"icon": "assets/testno1/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"net.faaf.testno1.TestNo1"
-		],
-		"fabric-datagen": [
-			"net.faaf.testno1.TestNo1DataGenerator"
-		],
-		"client": [
-			"net.faaf.testno1.TestModClient"
-		]
-	},
-	"mixins": [
-		"testno1.mixins.json"
-	],
-	"depends": {
-		"fabricloader": ">=0.16.14",
-		"minecraft": "~1.21",
-		"java": ">=21",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
-	}
+  "schemaVersion": 1,
+  "id": "testno1",
+  "version": "${version}",
+  "name": "TestNo1",
+  "description": "This is my first mod, it's just a test!",
+  "authors": [
+    "faaf"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/testno1"
+  },
+  "license": "CC0-1.0",
+  "icon": "assets/testmod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.faaf.testmod.TestMod"
+    ],
+    "fabric-datagen": [
+      "net.faaf.testmod.TestNo1DataGenerator"
+    ],
+    "client": [
+      "net.faaf.testmod.TestModClient"
+    ]
+  },
+  "mixins": [
+    "testno1.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "minecraft": "~1.21",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
 }
