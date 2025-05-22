@@ -3,7 +3,9 @@ package net.faaf.testmod.augment;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 
 public class AugmentManager {
@@ -13,21 +15,27 @@ public class AugmentManager {
     public static final Identifier SPEED_ID = Identifier.of("testmod", "speed_boost");
 
     public static void applyMeleeDamageBoost(PlayerEntity player) {
-        player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).addPersistentModifier(
-                new EntityAttributeModifier(MELEE_DAMAGE_BOOST_ID, 2.0, EntityAttributeModifier.Operation.ADD_VALUE));
-        player.sendMessage(Text.of("Melee damage boost applied!"), true);
+        if (consumeItemInHand(player)) {
+            player.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).addPersistentModifier(
+                    new EntityAttributeModifier(MELEE_DAMAGE_BOOST_ID, 2.0, EntityAttributeModifier.Operation.ADD_VALUE));
+            player.sendMessage(Text.of("Melee damage boost applied!"), true);
+        }
     }
 
     public static void applyResistance(PlayerEntity player) {
-        player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).addPersistentModifier(
-                new EntityAttributeModifier(RESISTANCE_ID, 2.0, EntityAttributeModifier.Operation.ADD_VALUE));
-        player.sendMessage(Text.of("Resistance boost applied!"), true);
+        if (consumeItemInHand(player)) {
+            player.getAttributeInstance(EntityAttributes.GENERIC_ARMOR).addPersistentModifier(
+                    new EntityAttributeModifier(RESISTANCE_ID, 2.0, EntityAttributeModifier.Operation.ADD_VALUE));
+            player.sendMessage(Text.of("Resistance boost applied!"), true);
+        }
     }
 
     public static void applySpeed(PlayerEntity player) {
-        player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).addPersistentModifier(
-                new EntityAttributeModifier(SPEED_ID, 0.1, EntityAttributeModifier.Operation.ADD_VALUE));
-        player.sendMessage(Text.of("Speed boost applied!"), true);
+        if (consumeItemInHand(player)) {
+            player.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).addPersistentModifier(
+                    new EntityAttributeModifier(SPEED_ID, 0.1, EntityAttributeModifier.Operation.ADD_VALUE));
+            player.sendMessage(Text.of("Speed boost applied!"), true);
+        }
     }
 
     /**
@@ -45,6 +53,26 @@ public class AugmentManager {
             return "Increases movement speed by 10%.";
         } else {
             return "Unknown augment.";
+        }
+    }
+
+    /**
+     * Consumes the item in the player's hand.
+     *
+     * @param player The player entity.
+     * @return True if an item was consumed, false otherwise.
+     */
+    private static boolean consumeItemInHand(PlayerEntity player) {
+        ItemStack stack = player.getStackInHand(Hand.MAIN_HAND);
+        if (!stack.isEmpty()) {
+            stack.decrement(1); // Reduce the item count by 1
+            if (stack.isEmpty()) {
+                player.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY); // Clear the hand if the stack is empty
+            }
+            return true;
+        } else {
+            player.sendMessage(Text.of("You must hold an augment item to use this!"), true);
+            return false;
         }
     }
 }
