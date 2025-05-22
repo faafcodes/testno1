@@ -5,52 +5,46 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+
+import java.util.List;
 
 public class CustomScreen extends Screen {
 
     private String currentTooltip;
+    private final List<Identifier> randomAugments;
 
     public CustomScreen() {
         super(Text.of("Augment Selection"));
+        // Obter 3 augments aleatórios ao inicializar a tela
+        this.randomAugments = AugmentManager.getRandomAugments();
     }
 
     @Override
     protected void init() {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
+        int buttonWidth = 100;
+        int buttonHeight = 20;
+        int buttonSpacing = 110; // Espaçamento horizontal entre os botões
 
-        // Botão para Dano Melee
-        ButtonWidget meleeButton = ButtonWidget.builder(
-                Text.of("Dano Melee"),
-                button -> {
-                    AugmentManager.applyMeleeDamageBoost(client.player);
-                    this.close();
-                }
-        ).dimensions(centerX - 160, centerY, 100, 20).build();
+        // Iterar pelos augments aleatórios e criar botões para cada um
+        for (int i = 0; i < randomAugments.size(); i++) {
+            Identifier augmentId = randomAugments.get(i);
+            String augmentName = augmentId.getPath().replace("_", " ").toUpperCase();
 
-        this.addDrawableChild(meleeButton);
+            ButtonWidget augmentButton = ButtonWidget.builder(
+                    Text.of(augmentName),
+                    button -> {
+                        if (client.player != null) {
+                            AugmentManager.applyAugment(client.player, augmentId);
+                        }
+                        this.close();
+                    }
+            ).dimensions(centerX - buttonSpacing + (i * buttonSpacing), centerY, buttonWidth, buttonHeight).build();
 
-        // Botão para Resistência
-        ButtonWidget resistanceButton = ButtonWidget.builder(
-                Text.of("Resistência"),
-                button -> {
-                    AugmentManager.applyResistance(client.player);
-                    this.close();
-                }
-        ).dimensions(centerX - 50, centerY, 100, 20).build();
-
-        this.addDrawableChild(resistanceButton);
-
-        // Botão para Velocidade
-        ButtonWidget speedButton = ButtonWidget.builder(
-                Text.of("Velocidade"),
-                button -> {
-                    AugmentManager.applySpeed(client.player);
-                    this.close();
-                }
-        ).dimensions(centerX + 60, centerY, 100, 20).build();
-
-        this.addDrawableChild(speedButton);
+            this.addDrawableChild(augmentButton);
+        }
     }
 
     @Override
@@ -65,6 +59,7 @@ public class CustomScreen extends Screen {
     }
 
     private void renderBackground(DrawContext context) {
+        context.fillGradient(0, 0, this.width, this.height, 0xFF000000, 0xFF111111);
     }
 
     @Override
@@ -75,12 +70,11 @@ public class CustomScreen extends Screen {
         this.children().forEach(child -> {
             if (child instanceof ButtonWidget button) {
                 if (button.isMouseOver(mouseX, mouseY)) {
-                    if (button.getMessage().getString().equals("Dano Melee")) {
-                        currentTooltip = AugmentManager.getAugmentDescription(AugmentManager.MELEE_DAMAGE_BOOST_ID);
-                    } else if (button.getMessage().getString().equals("Resistência")) {
-                        currentTooltip = AugmentManager.getAugmentDescription(AugmentManager.RESISTANCE_ID);
-                    } else if (button.getMessage().getString().equals("Velocidade")) {
-                        currentTooltip = AugmentManager.getAugmentDescription(AugmentManager.SPEED_ID);
+                    for (Identifier augmentId : randomAugments) {
+                        if (button.getMessage().getString().equals(augmentId.getPath().replace("_", " ").toUpperCase())) {
+                            currentTooltip = AugmentManager.getAugmentDescription(augmentId);
+                            break;
+                        }
                     }
                 }
             }
