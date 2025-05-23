@@ -7,6 +7,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomScreen extends Screen {
@@ -19,23 +20,24 @@ public class CustomScreen extends Screen {
         this.randomAugments = AugmentManager.getRandomAugmentsByType(augmentType);
     }
 
+    private final List<ButtonWidget> augmentButtons = new ArrayList<>();
+
     @Override
     protected void init() {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
+        int rerollButtonSize = 20; // Tamanho do botão de reroll
         int buttonWidth = 100; // Largura do botão
         int buttonHeight = 150; // Altura do botão
         int buttonSpacing = 20; // Espaçamento entre os botões
         int totalWidth = (randomAugments.size() * (buttonWidth + buttonSpacing)) - buttonSpacing;
 
-        // Iterar pelos augments aleatórios e criar botões para cada um
         for (int i = 0; i < randomAugments.size(); i++) {
             Identifier augmentId = randomAugments.get(i);
             String augmentName = augmentId.getPath().replace("_", " ").toUpperCase();
 
-            // Ajustar a posição dos botões
             int xPosition = centerX - (totalWidth / 2) + (i * (buttonWidth + buttonSpacing));
-            int yPosition = centerY - (buttonHeight / 2); // Centralizar verticalmente
+            int yPosition = centerY - (buttonHeight / 2);
 
             ButtonWidget augmentButton = ButtonWidget.builder(
                     Text.of(augmentName),
@@ -48,36 +50,46 @@ public class CustomScreen extends Screen {
             ).dimensions(xPosition, yPosition, buttonWidth, buttonHeight).build();
 
             this.addDrawableChild(augmentButton);
+            augmentButtons.add(augmentButton); // Adicionar à lista de augment buttons
+
+            int rerollX = xPosition + (buttonWidth / 2) - (rerollButtonSize / 2);
+            int rerollY = yPosition + buttonHeight + 5;
+
+            ButtonWidget rerollButton = ButtonWidget.builder(
+                    Text.of("⟳"),
+                    button -> {
+                        // Ação de reroll será adicionada posteriormente
+                    }
+            ).dimensions(rerollX, rerollY, rerollButtonSize, rerollButtonSize).build();
+
+            this.addDrawableChild(rerollButton);
         }
     }
+
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         this.renderBackground(context);
 
-        // Desenhar bordas coloridas ao redor dos botões
-        for (int i = 0; i < this.children().size(); i++) {
-            if (this.children().get(i) instanceof ButtonWidget button) {
-                Identifier augmentId = randomAugments.get(i);
+        for (int i = 0; i < augmentButtons.size(); i++) {
+            ButtonWidget button = augmentButtons.get(i);
+            Identifier augmentId = randomAugments.get(i);
 
-                // Determinar a cor da borda com base na raridade
-                int borderColor = getBorderColor(augmentId);
+            int borderColor = getBorderColor(augmentId);
 
-                // Desenhar a borda
-                context.fill(button.getX() - 2, button.getY() - 2, button.getX() + button.getWidth() + 2, button.getY(), borderColor); // Topo
-                context.fill(button.getX() - 2, button.getY(), button.getX(), button.getY() + button.getHeight(), borderColor); // Esquerda
-                context.fill(button.getX() + button.getWidth(), button.getY(), button.getX() + button.getWidth() + 2, button.getY() + button.getHeight(), borderColor); // Direita
-                context.fill(button.getX() - 2, button.getY() + button.getHeight(), button.getX() + button.getWidth() + 2, button.getY() + button.getHeight() + 2, borderColor); // Base
-            }
+            context.fill(button.getX() - 2, button.getY() - 2, button.getX() + button.getWidth() + 2, button.getY(), borderColor); // Topo
+            context.fill(button.getX() - 2, button.getY(), button.getX(), button.getY() + button.getHeight(), borderColor); // Esquerda
+            context.fill(button.getX() + button.getWidth(), button.getY(), button.getX() + button.getWidth() + 2, button.getY() + button.getHeight(), borderColor); // Direita
+            context.fill(button.getX() - 2, button.getY() + button.getHeight(), button.getX() + button.getWidth() + 2, button.getY() + button.getHeight() + 2, borderColor); // Base
         }
 
         super.render(context, mouseX, mouseY, delta);
 
-        // Renderizar tooltip com fundo se necessário
         if (currentTooltip != null) {
             context.drawTooltip(this.textRenderer, Text.of(currentTooltip), mouseX, mouseY);
         }
     }
+
 
     private void renderBackground(DrawContext context) {
         context.fillGradient(0, 0, this.width, this.height, 0xFF000000, 0xFF111111);
@@ -100,19 +112,14 @@ public class CustomScreen extends Screen {
     public void mouseMoved(double mouseX, double mouseY) {
         currentTooltip = null;
 
-        // Verifica se o mouse está sobre algum botão e atualiza a descrição
-        this.children().forEach(child -> {
-            if (child instanceof ButtonWidget button) {
-                if (button.isMouseOver(mouseX, mouseY)) {
-                    for (Identifier augmentId : randomAugments) {
-                        if (button.getMessage().getString().equals(augmentId.getPath().replace("_", " ").toUpperCase())) {
-                            currentTooltip = AugmentManager.getAugmentDescription(augmentId);
-                            break;
-                        }
-                    }
-                }
+        for (int i = 0; i < augmentButtons.size(); i++) {
+            ButtonWidget button = augmentButtons.get(i);
+            if (button.isMouseOver(mouseX, mouseY)) {
+                Identifier augmentId = randomAugments.get(i);
+                currentTooltip = AugmentManager.getAugmentDescription(augmentId);
+                break;
             }
-        });
+        }
 
         super.mouseMoved(mouseX, mouseY);
     }
