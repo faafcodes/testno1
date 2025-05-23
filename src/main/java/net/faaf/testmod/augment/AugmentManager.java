@@ -83,31 +83,25 @@ public class AugmentManager {
     }
 
     /**
-     * Returns a list of 3 random augments.
+     * Returns a list of 3 random augments filtered by type.
      *
+     * @param type The type of augments to filter (iron, gold, diamond).
      * @return List of augment Identifiers.
      */
-    public static List<Identifier> getRandomAugments() {
-        List<Identifier> allAugments = new ArrayList<>();
+    public static List<Identifier> getRandomAugmentsByType(String type) {
+        List<Identifier> filteredAugments = switch (type.toLowerCase()) {
+            case "iron" ->
+                    List.of(MELEE_DAMAGE_BOOST_ID, RESISTANCE_ID, SPEED_ID, IRON_HEALTH_REGEN_ID, IRON_DAMAGE_RESIST_ID);
+            case "gold" ->
+                    List.of(GOLD_STRENGTH_BOOST_ID, GOLD_HEALTH_BOOST_ID, GOLD_FIRE_RESISTANCE_ID, GOLD_ATTACK_SPEED_ID, GOLD_LUCK_ID);
+            case "diamond" ->
+                    List.of(DIAMOND_REGENERATION_ID, DIAMOND_SPEED_BOOST_ID, DIAMOND_DAMAGE_BOOST_ID, DIAMOND_DEFENSE_ID, DIAMOND_WATER_BREATHING_ID);
+            default -> throw new IllegalArgumentException("Invalid augment type: " + type);
+        };
 
-        allAugments.add(MELEE_DAMAGE_BOOST_ID);
-        allAugments.add(RESISTANCE_ID);
-        allAugments.add(SPEED_ID);
-        allAugments.add(IRON_HEALTH_REGEN_ID);
-        allAugments.add(IRON_DAMAGE_RESIST_ID);
-        allAugments.add(GOLD_STRENGTH_BOOST_ID);
-        allAugments.add(GOLD_HEALTH_BOOST_ID);
-        allAugments.add(GOLD_FIRE_RESISTANCE_ID);
-        allAugments.add(GOLD_ATTACK_SPEED_ID);
-        allAugments.add(GOLD_LUCK_ID);
-        allAugments.add(DIAMOND_REGENERATION_ID);
-        allAugments.add(DIAMOND_SPEED_BOOST_ID);
-        allAugments.add(DIAMOND_DAMAGE_BOOST_ID);
-        allAugments.add(DIAMOND_DEFENSE_ID);
-        allAugments.add(DIAMOND_WATER_BREATHING_ID);
-
-        Collections.shuffle(allAugments);
-        return allAugments.subList(0, 3);
+        List<Identifier> randomAugments = new ArrayList<>(filteredAugments);
+        Collections.shuffle(randomAugments);
+        return randomAugments.subList(0, Math.min(3, randomAugments.size()));
     }
 
     /**

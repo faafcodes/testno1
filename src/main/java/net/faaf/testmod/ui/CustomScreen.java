@@ -14,10 +14,10 @@ public class CustomScreen extends Screen {
     private String currentTooltip;
     private final List<Identifier> randomAugments;
 
-    public CustomScreen() {
+    public CustomScreen(String augmentType) {
         super(Text.of("Augment Selection"));
-        // Obter 3 augments aleatórios ao inicializar a tela
-        this.randomAugments = AugmentManager.getRandomAugments();
+        // Obter 3 augments aleatórios do tipo especificado ao inicializar a tela
+        this.randomAugments = AugmentManager.getRandomAugmentsByType(augmentType);
     }
 
     @Override

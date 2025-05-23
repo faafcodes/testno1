@@ -44,10 +44,23 @@ public class ModItems {
         @Override
         public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
             if (world.isClient) {
-                MinecraftClient.getInstance().setScreen(new CustomScreen());
+                String augmentType;
+
+                if (this == IRON_CARD) {
+                    augmentType = "iron";
+                } else if (this == GOLD_CARD) {
+                    augmentType = "gold";
+                } else if (this == DIAMOND_CARD) {
+                    augmentType = "diamond";
+                } else {
+                    augmentType = "unknown"; // Caso inesperado (você pode lançar uma exceção aqui, se preferir)
+                }
+
+                MinecraftClient.getInstance().setScreen(new CustomScreen(augmentType));
             }
             return TypedActionResult.success(player.getStackInHand(hand));
         }
+
 
         @Override
         public boolean hasGlint(ItemStack stack) {
