@@ -24,14 +24,19 @@ public class CustomScreen extends Screen {
     protected void init() {
         int centerX = this.width / 2;
         int centerY = this.height / 2;
-        int buttonWidth = 100;
-        int buttonHeight = 20;
-        int buttonSpacing = 110; // Espaçamento horizontal entre os botões
+        int buttonWidth = 100; // Largura do botão
+        int buttonHeight = 150; // Altura do botão
+        int buttonSpacing = 20; // Espaçamento entre os botões
+        int totalWidth = (randomAugments.size() * (buttonWidth + buttonSpacing)) - buttonSpacing;
 
         // Iterar pelos augments aleatórios e criar botões para cada um
         for (int i = 0; i < randomAugments.size(); i++) {
             Identifier augmentId = randomAugments.get(i);
             String augmentName = augmentId.getPath().replace("_", " ").toUpperCase();
+
+            // Ajustar a posição dos botões
+            int xPosition = centerX - (totalWidth / 2) + (i * (buttonWidth + buttonSpacing));
+            int yPosition = centerY - (buttonHeight / 2); // Centralizar verticalmente
 
             ButtonWidget augmentButton = ButtonWidget.builder(
                     Text.of(augmentName),
@@ -41,11 +46,12 @@ public class CustomScreen extends Screen {
                         }
                         this.close();
                     }
-            ).dimensions(centerX - buttonSpacing + (i * buttonSpacing), centerY, buttonWidth, buttonHeight).build();
+            ).dimensions(xPosition, yPosition, buttonWidth, buttonHeight).build();
 
             this.addDrawableChild(augmentButton);
         }
     }
+
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
