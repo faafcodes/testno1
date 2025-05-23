@@ -110,10 +110,39 @@ public class AugmentManager {
     public static String getAugmentDescription(Identifier augmentId) {
         if (augmentId.equals(MELEE_DAMAGE_BOOST_ID)) {
             return "Increases melee damage by 2 points (Iron Tier).";
+        } else if (augmentId.equals(RESISTANCE_ID)) {
+            return "Increases resistance by 2 points (Iron Tier).";
+        } else if (augmentId.equals(SPEED_ID)) {
+            return "Increases movement speed by 10% (Iron Tier).";
+        } else if (augmentId.equals(IRON_HEALTH_REGEN_ID)) {
+            return "Regenerates health over time (Iron Tier).";
+        } else if (augmentId.equals(IRON_DAMAGE_RESIST_ID)) {
+            return "Reduces damage taken (Iron Tier).";
+        } else if (augmentId.equals(GOLD_STRENGTH_BOOST_ID)) {
+            return "Increases strength by 5 points (Gold Tier).";
+        } else if (augmentId.equals(GOLD_HEALTH_BOOST_ID)) {
+            return "Increases maximum health by 8 points (Gold Tier).";
+        } else if (augmentId.equals(GOLD_FIRE_RESISTANCE_ID)) {
+            return "Grants fire resistance (Gold Tier).";
+        } else if (augmentId.equals(GOLD_ATTACK_SPEED_ID)) {
+            return "Increases attack speed by 20% (Gold Tier).";
+        } else if (augmentId.equals(GOLD_LUCK_ID)) {
+            return "Increases luck (Gold Tier).";
+        } else if (augmentId.equals(DIAMOND_REGENERATION_ID)) {
+            return "Regenerates health quickly (Diamond Tier).";
+        } else if (augmentId.equals(DIAMOND_SPEED_BOOST_ID)) {
+            return "Increases movement speed by 20% (Diamond Tier).";
+        } else if (augmentId.equals(DIAMOND_DAMAGE_BOOST_ID)) {
+            return "Increases melee damage by 10 points (Diamond Tier).";
+        } else if (augmentId.equals(DIAMOND_DEFENSE_ID)) {
+            return "Greatly increases defense (Diamond Tier).";
+        } else if (augmentId.equals(DIAMOND_WATER_BREATHING_ID)) {
+            return "Grants the ability to breathe underwater (Diamond Tier).";
+        } else {
+            return "Unknown augment.";
         }
-        // Outros descritores omitidos para compactar.
-        return "Unknown augment.";
     }
+
 
     /**
      * Consumes the item in the player's hand.
